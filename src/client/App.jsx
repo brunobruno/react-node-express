@@ -13,15 +13,14 @@ function App() {
     const idToAdd = Number(e.target.dataset.id)
      if(favorites.includes(idToAdd)){
        //remove from state and localstorage
-       const arrayClone = favorites
-       arrayClone.splice(arrayClone.findIndex(e => e === idToAdd),1)
-       const newFavorites = arrayClone.filter((item) => item.idToAdd !== idToAdd)
+       const newFavorites = favorites.filter(item => item !== idToAdd)
        setFavorites(newFavorites)
        localStorage.setItem('favorites',newFavorites)
     }else{
       //add to state and to localstorage
-      setFavorites(favorites => [...favorites,idToAdd])
-      localStorage.setItem('favorites',[...favorites,idToAdd])
+      favorites.push(idToAdd)
+      setFavorites([...favorites])
+      localStorage.setItem('favorites',[...favorites])
     }
   }
 
@@ -29,7 +28,7 @@ function App() {
     //call api get flyers
     fetch('/api/flyers?page=1&limit=100')
       .then(res => res.json())
-      .then(flyer => setFlyer(flyer.flyersData))
+      .then(flyer => setFlyer(flyer.flyersData))// todo add is favorite
     //if have favorites in localstorage get it and add to state
     if(localStorage.getItem('favorites') !== null){
       const stringToArray = Array.from(localStorage.getItem('favorites').split(','),Number)
